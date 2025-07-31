@@ -9,24 +9,37 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ENV: production
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: npm install
+
       - name: Build project
         run: npm run build
+
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: ./build
+
+      - name: Show environment variables
+        run: |
+          echo "Custom ENV: $ENV"
+          echo "Commit SHA: $GITHUB_SHA"
+          echo "Branch Ref: $GITHUB_REF"
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: npm install
+
       - name: Run tests
         run: npm test
